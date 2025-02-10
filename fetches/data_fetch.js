@@ -59,9 +59,13 @@ function convertToCSV(data) {
         "seconds_from_period_start",
         "start_time", 
         "end_time", 
-        "position_x", 
-        "position_y",
+        "start_position_x", 
+        "start_position_y",
+        "end_position_x", 
+        "end_position_y",
+        "speed"
     ];
+
     let csv = headers.join(",") + "\n";
 
     data.forEach(({ tournamentId, matchId, events }) => {
@@ -78,14 +82,17 @@ function convertToCSV(data) {
             // Extract fields dynamically, handling missing values
             const startTime = eventData.startTimestamp || "";
             const endTime = eventData.endTimestamp || "";
-            const positionX = eventData.startPosition?.x || "";
-            const positionY = eventData.startPosition?.y || "";
+            const startPositionX = eventData.startPosition?.x || "";
+            const startPositionY = eventData.startPosition?.y || "";
+            const endPositionX = eventData.endPosition?.x || "";
+            const endPositionY = eventData.endPosition?.y || "";
             const period = eventData.period || "";
+            const speed = eventData.speed || "";
             const result = eventData.result || "";
             const team = eventData.team || "";
             const seconds_from_period_start = eventData.secondsFromPeriodStart || "";
 
-            csv += `${tournament_id},${match_id},${eventType},${period},${result},${team},${seconds_from_period_start},${startTime},${endTime},${positionX},${positionY}\n`;
+            csv += `${tournament_id},${match_id},${eventType},${period},${result},${team},${seconds_from_period_start},${startTime},${endTime},${startPositionX},${startPositionY},${endPositionX},${endPositionY},${speed}\n`;
         });
     });
 
