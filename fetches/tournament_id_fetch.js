@@ -8,6 +8,7 @@ async function fetchTournamentData() {
     return tournaments.tournaments ? {tournaments: tournaments.tournaments || [] } : [];
 }
 
+
 async function fetchData(url) {
     try {
         const response = await fetch(url, {
@@ -40,14 +41,12 @@ function convertToCSV(data) {
     
     let csv = headers.join(",") + "\n";
 
-    data.forEach(({tournaments}) => {
 
-        tournaments.forEach(tournament => {
-            const tournament_id = tournament.id || "";
-            const name = tournament.name || "";
+    data.tournaments.map(tournament => {
+        const tournament_id = tournament.id || "";
+        const name = tournament.name || "";
 
-            csv += `${tournament_id},${name}\n`;
-        });
+        csv += `${tournament_id},${name}\n`;
     });
 
     return csv;
@@ -60,7 +59,7 @@ function saveCSVFile(csvData, filename) {
 
 
 // Example usage
-fetchTournamentData([150]).then(data => {
+fetchTournamentData().then(data => {
     const csv = convertToCSV(data);
     saveCSVFile(csv, "data/tournament_ids.csv");
 });

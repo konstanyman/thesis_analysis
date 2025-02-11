@@ -1,24 +1,33 @@
 require("dotenv").config(); // Load .env variables
 const fs = require("fs");
+const pLimit = require("p-limit").default;
+const limit = pLimit(5);
+
+// sleep function
+function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 async function fetchTournamentData(tournamentIds) {
     const baseUrl = "https://api.football.wisesport.com/v1.0/tournaments";
-    
-    const matchPromises = tournamentIds.map(async (tournamentId) => {
-        const matches = await fetchData(`${baseUrl}/${tournamentId}/matches`);
-        return matches.matches ? matches.matches.map(match => ({ tournamentId, matchId: match.id })) : [];
-    });
+
+    const matchPromises = tournamentIds.map(tournamentId => 
+        limit(async () => {
+            const matches = await fetchData(`${baseUrl}/${tournamentId}/matches`);
+            return matches.matches ? matches.matches.map(match => ({ tournamentId, matchId: match.id })) : [];
+    }));
 
     const matches = (await Promise.all(matchPromises)).flat();
 
-    const timelinePromises = matches.map(async ({ tournamentId, matchId }) => {
-        const timeline = await fetchData(
-            `${baseUrl}/${tournamentId}/matches/${matchId}/timeline?eventTypes=Shot,Pass,BallContest,Dribble,HeaderContest`
-        );
+    const timelinePromises = matches.map(({ tournamentId, matchId }) => 
+        limit(async () => {
+            const timeline = await fetchData(
+            `   ${baseUrl}/${tournamentId}/matches/${matchId}/timeline?eventTypes=Shot,Pass,BallContest,Dribble,HeaderContest`
+            );
 
-        // Ensure we attach tournamentId & matchId
-        return timeline ? { tournamentId, matchId, events: timeline.events || [] } : null;
-    });
+            // Ensure we attach tournamentId & matchId
+            return timeline ? { tournamentId, matchId, events: timeline.events || [] } : null;
+    }));
 
     const timelines = await Promise.all(timelinePromises);
     return timelines.filter(timeline => timeline !== null); // Remove failed requests
@@ -104,9 +113,12 @@ function saveCSVFile(csvData, filename) {
     console.log(`CSV file saved as: ${filename}`);
 }
 
-
-// Example usage
-fetchTournamentData([150]).then(data => {
-    const csv = convertToCSV(data);
-    saveCSVFile(csv, "data/match_timelines.csv");
+fs.readFile('./data/extracted_tournament_ids.json', 'utf8', (err, data) => {
+    if (err) throw err;
+    const extracted_tournament_ids = JSON.parse(data);
+    fetchTournamentData(extracted_tournament_ids).then(data => {
+        const csv = convertToCSV(data);
+        saveCSVFile(csv, "data/match_timelines.csv");
+    });
 });
+

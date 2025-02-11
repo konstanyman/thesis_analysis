@@ -69,8 +69,11 @@ function saveCSVFile(csvData, filename) {
 }
 
 
-// Example usage
-fetchTournamentData([150]).then(data => {
-    const csv = convertToCSV(data);
-    saveCSVFile(csv, "data/match_ids.csv");
+fs.readFile('./data/extracted_tournament_ids.json', 'utf8', (err, data) => {
+    if (err) throw err;
+    const extracted_tournament_ids = JSON.parse(data);
+    fetchTournamentData(extracted_tournament_ids).then(data => {
+        const csv = convertToCSV(data);
+        saveCSVFile(csv, "data/match_ids.csv");
+    });
 });
