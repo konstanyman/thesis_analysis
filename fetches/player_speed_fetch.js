@@ -1,7 +1,7 @@
 require("dotenv").config(); // Load .env variables
 const fs = require("fs");
 const pLimit = require("p-limit").default;
-const limit = pLimit(3);
+const limit = pLimit(1);
 
 
 async function fetchPlayerStatistics(tournamentIds) {
@@ -56,6 +56,8 @@ function convertPlayerStatsToCSV(data) {
         "tournament_id", "match_id", "player_id", "team",
         "top_speed_first", "top_speed_second",
         "avg_speed_with_ball_first", "avg_speed_with_ball_second",
+        "accelerations_first", "accelerations_second",
+        "decelerations_first", "decelerations_second",
         "time_in_speed_zone_0_5_first", "time_in_speed_zone_0_5_second",
         "time_in_speed_zone_5_10_first", "time_in_speed_zone_5_10_second",
         "time_in_speed_zone_10_15_first", "time_in_speed_zone_10_15_second",
@@ -85,6 +87,10 @@ function convertPlayerStatsToCSV(data) {
                 period2.movementStatistics?.topSpeed || 0,
                 period1.movementStatistics?.averageSpeedWithBall || 0,
                 period2.movementStatistics?.averageSpeedWithBall || 0,
+                period1.movementStatistics?.accelerations || 0,
+                period2.movementStatistics?.accelerations || 0,
+                period1.movementStatistics?.decelerations || 0,
+                period2.movementStatistics?.decelerations || 0,
                 getSpeedZoneTime(speedZones1, 0), getSpeedZoneTime(speedZones2, 0),
                 getSpeedZoneTime(speedZones1, 5), getSpeedZoneTime(speedZones2, 5),
                 getSpeedZoneTime(speedZones1, 10), getSpeedZoneTime(speedZones2, 10),
