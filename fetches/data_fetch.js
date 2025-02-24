@@ -3,10 +3,6 @@ const fs = require("fs");
 const pLimit = require("p-limit").default;
 const limit = pLimit(5);
 
-// sleep function
-function sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
 
 async function fetchTournamentData(tournamentIds) {
     const baseUrl = "https://api.football.wisesport.com/v1.0/tournaments";
