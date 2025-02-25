@@ -1,7 +1,7 @@
 require("dotenv").config(); // Load .env variables
 const fs = require("fs");
 const pLimit = require("p-limit").default;
-const limit = pLimit(5);
+const limit = pLimit(1);
 
 
 async function fetchTournamentData(tournamentIds) {
