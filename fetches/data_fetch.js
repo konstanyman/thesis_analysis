@@ -18,7 +18,7 @@ async function fetchTournamentData(tournamentIds) {
     const timelinePromises = matches.map(({ tournamentId, matchId }) => 
         limit(async () => {
             const timeline = await fetchData(
-            `   ${baseUrl}/${tournamentId}/matches/${matchId}/timeline?eventTypes=Shot,Pass,BallContest,Dribble,HeaderContest,ThrowIn,CornerKick,KickOff,GoalKick,FreeKick,PenaltyKick`
+                `${baseUrl}/${tournamentId}/matches/${matchId}/timeline?eventTypes=Shot,Pass,BallContest,Dribble,HeaderContest,ThrowIn,CornerKick,KickOff,GoalKick,FreeKick,PenaltyKick&pageSize=1000`
             );
 
             // Ensure we attach tournamentId & matchId
