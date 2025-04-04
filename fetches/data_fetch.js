@@ -61,6 +61,8 @@ function convertToCSV(data) {
         "period",
         "result",
         "team",
+        "passer",
+        "player",
         "seconds_from_period_start",
         "start_time", 
         "end_time", 
@@ -95,9 +97,11 @@ function convertToCSV(data) {
             const speed = eventData.speed || "";
             const result = eventData.result || "";
             const team = eventData.team || "";
+            const passer = eventData.passer || "";
+            const player = eventData.player || "";
             const seconds_from_period_start = eventData.secondsFromPeriodStart || "";
 
-            csv += `${tournament_id},${match_id},${eventType},${period},${result},${team},${seconds_from_period_start},${startTime},${endTime},${startPositionX},${startPositionY},${endPositionX},${endPositionY},${speed}\n`;
+            csv += `${tournament_id},${match_id},${eventType},${period},${result},${team},${passer},${player},${seconds_from_period_start},${startTime},${endTime},${startPositionX},${startPositionY},${endPositionX},${endPositionY},${speed}\n`;
         });
     });
 
